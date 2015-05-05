@@ -1,0 +1,14 @@
+//THIS NEEDS TO BE DEFINED!
+#include "../rootPath.configureMe"
+
+//THIS HAS ALL THE HEADER AND LIBS FOR OF CORE
+#include "../../../dm-thirdparty/openFrameworks-master/libs/openFrameworksCompiled/project/ios/CoreOF.xcconfig"
+
+
+OTHER_LDFLAGS = $(OF_CORE_LIBS) 
+HEADER_SEARCH_PATHS = $(OF_CORE_HEADERS)
+
+COMPRESS_PNG_FILES = NO
+GCC_THUMB_SUPPORT = NO
+IPHONEOS_DEPLOYMENT_TARGET = 5.1.1
+TARGETED_DEVICE_FAMILY = 1

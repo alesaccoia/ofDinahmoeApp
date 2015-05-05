@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B5186B98-56B9-4466-94DA-6B0606A12E15</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project_osx</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>39992978-72FF-45AA-BF0C-6132691813B5</key>
+		<string>https://github.com/openframeworks/openFrameworks</string>
+		<key>B1243783-A4DC-4B38-92C6-2E32A577A476</key>
+		<string>ssh://bitbucket.org/dinahmoedev/ofdinahmoeapp.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>project_osx/project_osx.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>39992978-72FF-45AA-BF0C-6132691813B5</key>
+		<string>../../../../../dm-thirdparty/openFrameworks-master</string>
+		<key>B1243783-A4DC-4B38-92C6-2E32A577A476</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://bitbucket.org/dinahmoedev/ofdinahmoeapp.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>B1243783-A4DC-4B38-92C6-2E32A577A476</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>B1243783-A4DC-4B38-92C6-2E32A577A476</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofDinahmoeApp</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>39992978-72FF-45AA-BF0C-6132691813B5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>openFrameworks-master</string>
+		</dict>
+	</array>
+</dict>
+</plist>
