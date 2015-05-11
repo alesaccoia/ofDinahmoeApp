@@ -1,2 +1,2 @@
-
-OF_PATH = ../../../dm-thirdparty/openFrameworks-master
+# THIS IS RELATIVE TO THE PROJECTS DIRECTORY, THAT IS ONE ABOVE THIS FILE!
+OF_PATH = ../../../dm-thirdparty/openframeworks
