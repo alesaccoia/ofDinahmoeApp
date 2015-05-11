@@ -1,9 +1,13 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxDmaf.h"
 
+#if OF_TARGET_OSX || OF_TARGET_IOS
 class ofDinahmoeApp : public ofBaseApp{
-
+#else if OF_TARGET_ANDROID
+class ofDinahmoeApp : public ofxAndroidApp{
+#endif
 	public:
 		void setup();
 		void update();
@@ -19,8 +23,12 @@ class ofDinahmoeApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
   
-    #ifdef OF_TARGET_IOS
+    #if OF_TARGET_OSX || OF_TARGET_IOS
+		void dragEvent(ofDragInfo dragInfo);
+		void gotMessage(ofMessage msg);
+    #endif
   
+    #ifdef OF_TARGET_IOS
     void exit();
 	
     void touchDown(ofTouchEventArgs & touch);
@@ -33,7 +41,24 @@ class ofDinahmoeApp : public ofBaseApp{
     void gotFocus();
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
-  
     #endif
 		
+    #ifdef OF_TARGET_ANDROID
+    void touchDown(int x, int y, int id);
+		void touchMoved(int x, int y, int id);
+		void touchUp(int x, int y, int id);
+		void touchDoubleTap(int x, int y, int id);
+		void touchCancelled(int x, int y, int id);
+		void swipe(ofxAndroidSwipeDir swipeDir, int id);
+
+		void pause();
+		void stop();
+		void resume();
+		void reloadTextures();
+
+		bool backPressed();
+		void okPressed();
+		void cancelPressed();
+    #endif
+  
 };
