@@ -3,9 +3,13 @@
 #include "ofMain.h"
 #include "ofxDmaf.h"
 
-#if OF_TARGET_OSX || OF_TARGET_IOS
+#if defined(TARGET_ANDROID)
+#include "ofxAndroid.h"
+#endif
+
+#if defined(TARGET_OSX) || defined(TARGET_IOS)
 class ofDinahmoeApp : public ofBaseApp{
-#else if OF_TARGET_ANDROID
+#elif defined(TARGET_ANDROID)
 class ofDinahmoeApp : public ofxAndroidApp{
 #endif
 	public:
@@ -20,17 +24,14 @@ class ofDinahmoeApp : public ofxAndroidApp{
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
   
-    #if OF_TARGET_OSX || OF_TARGET_IOS
+    #if defined(TARGET_OSX) || defined(TARGET_IOS)
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     #endif
   
-    #ifdef OF_TARGET_IOS
+    #if defined(TARGET_IOS)    
     void exit();
-	
     void touchDown(ofTouchEventArgs & touch);
     void touchMoved(ofTouchEventArgs & touch);
     void touchUp(ofTouchEventArgs & touch);
@@ -43,7 +44,7 @@ class ofDinahmoeApp : public ofxAndroidApp{
     void deviceOrientationChanged(int newOrientation);
     #endif
 		
-    #ifdef OF_TARGET_ANDROID
+    #if defined(TARGET_ANDROID)
     void touchDown(int x, int y, int id);
 		void touchMoved(int x, int y, int id);
 		void touchUp(int x, int y, int id);

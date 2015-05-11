@@ -51,7 +51,7 @@ void ofDinahmoeApp::windowResized(int w, int h){
 }
 
 
-#if OF_TARGET_OSX || OF_TARGET_IOS
+#if defined(TARGET_OSX) || defined(TARGET_IOS)
 
 //--------------------------------------------------------------
 void ofDinahmoeApp::gotMessage(ofMessage msg){
@@ -65,8 +65,7 @@ void ofDinahmoeApp::dragEvent(ofDragInfo dragInfo){
 
 #endif
 
-#ifdef OF_TARGET_IOS
-
+#if defined(TARGET_OSX)
 
 //--------------------------------------------------------------
 void ofDinahmoeApp::exit(){
@@ -120,70 +119,70 @@ void ofDinahmoeApp::deviceOrientationChanged(int newOrientation){
 
 #endif
 
-#ifdef OS_TARGET_ANDROID
+#if defined(TARGET_ANDROID)
 
 //--------------------------------------------------------------
-void ofApp::touchDown(int x, int y, int id){
+void ofDinahmoeApp::touchDown(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::touchMoved(int x, int y, int id){
+void ofDinahmoeApp::touchMoved(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::touchUp(int x, int y, int id){
+void ofDinahmoeApp::touchUp(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::touchDoubleTap(int x, int y, int id){
+void ofDinahmoeApp::touchDoubleTap(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::touchCancelled(int x, int y, int id){
+void ofDinahmoeApp::touchCancelled(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
+void ofDinahmoeApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::pause(){
+void ofDinahmoeApp::pause(){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::stop(){
+void ofDinahmoeApp::stop(){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::resume(){
+void ofDinahmoeApp::resume(){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::reloadTextures(){
+void ofDinahmoeApp::reloadTextures(){
 
 }
 
 //--------------------------------------------------------------
-bool ofApp::backPressed(){
+bool ofDinahmoeApp::backPressed(){
 	return false;
 }
 
 //--------------------------------------------------------------
-void ofApp::okPressed(){
+void ofDinahmoeApp::okPressed(){
 
 }
 
 //--------------------------------------------------------------
-void ofApp::cancelPressed(){
+void ofDinahmoeApp::cancelPressed(){
 
 }
 #endif
