@@ -1,0 +1,4 @@
+In Project.properties
+android.library.reference.1=../../../dm-thirdparty/openframeworks/addons/ofxAndroid/ofAndroidLib
+
+ant debug install -Dsdk.dir=path/to/sdk
