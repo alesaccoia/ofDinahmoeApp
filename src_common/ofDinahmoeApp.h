@@ -62,4 +62,6 @@ class ofDinahmoeApp : public ofxAndroidApp{
 		void cancelPressed();
     #endif
   
+    ofImage m_logo;
+  
 };

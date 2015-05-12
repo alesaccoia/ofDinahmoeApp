@@ -2,7 +2,9 @@
 
 //--------------------------------------------------------------
 void ofDinahmoeApp::setup(){
-
+  ofSetFrameRate(30);
+  ofSetWindowShape(640,480);
+  m_logo.load("DinahMoeLogo.png");
 }
 
 //--------------------------------------------------------------
@@ -12,7 +14,8 @@ void ofDinahmoeApp::update(){
 
 //--------------------------------------------------------------
 void ofDinahmoeApp::draw(){
-
+  ofSetColor(ofColor::white);
+  m_logo.draw(0, 0, ofGetWidth(), ofGetHeight());
 }
 
 //--------------------------------------------------------------
