@@ -1,10 +1,34 @@
 #include "ofDinahmoeApp.h"
 
+#define SAMPLING_RATE 44100.F
+#define INPUT_CHANNELS 0
+#define OUTPUT_CHANNELS 2
+#define BUFFER_SIZE 512
+
 //--------------------------------------------------------------
 void ofDinahmoeApp::setup(){
   ofSetFrameRate(30);
   ofSetWindowShape(640,480);
   m_logo.load("DinahMoeLogo.png");
+  
+//  int bufferSize		= 512;
+//	sampleRate 			= 44100;
+//  soundStream.setup(this, 2, 0, 44100, 512, 4);
+  
+  DmDictionary params;
+  params.setStringValue("settingsFile", ofToDataPath("android_tempo/xml/settings.xml").c_str());
+  m_dmaf.initialize(params);
+  
+  // create temp buffer
+  m_tempOutputBuffer = new float*[OUTPUT_CHANNELS];
+  for (int ch = 0; ch < OUTPUT_CHANNELS; ++ch) {
+    m_tempOutputBuffer[ch] = new float[BUFFER_SIZE];
+  }
+  
+  //
+  ofSoundStreamSetup(OUTPUT_CHANNELS, INPUT_CHANNELS, this, SAMPLING_RATE, BUFFER_SIZE, 4);
+  
+ 
 }
 
 //--------------------------------------------------------------
@@ -18,9 +42,26 @@ void ofDinahmoeApp::draw(){
   m_logo.draw(0, 0, ofGetWidth(), ofGetHeight());
 }
 
+
+// Audio
+
+
+void ofDinahmoeApp::audioRequested(float * output, int bufferSize, int nChannels) {
+  assert(bufferSize == BUFFER_SIZE);
+  assert(nChannels == OUTPUT_CHANNELS);
+  m_dmaf.process(0, NULL, nChannels, m_tempOutputBuffer, bufferSize);
+  float * outputSample = output;
+  for (int i = 0; i < BUFFER_SIZE; ++i) {
+    for (int ch = 0; ch < OUTPUT_CHANNELS; ++ch) {
+      *outputSample = m_tempOutputBuffer[ch][i];
+      ++outputSample;
+    }
+  }
+}
+
 //--------------------------------------------------------------
 void ofDinahmoeApp::keyPressed(int key){
-
+  m_dmaf.tell("play");
 }
 
 //--------------------------------------------------------------

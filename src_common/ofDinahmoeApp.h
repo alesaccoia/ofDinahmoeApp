@@ -25,6 +25,8 @@ class ofDinahmoeApp : public ofxAndroidApp{
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
   
+    void audioRequested(float * output, int bufferSize, int nChannels );
+  
     #if defined(TARGET_OSX) || defined(TARGET_IOS)
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
@@ -63,5 +65,8 @@ class ofDinahmoeApp : public ofxAndroidApp{
     #endif
   
     ofImage m_logo;
+    DmafCore m_dmaf;
   
+    ofThread m_initializationThread;
+    float** m_tempOutputBuffer;
 };
