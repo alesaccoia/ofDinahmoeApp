@@ -2,6 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxDmaf.h"
+#include "ofxGui.h"
+
+#include <list>
+
 
 #if defined(TARGET_ANDROID)
 #include "ofxAndroid.h"
@@ -67,6 +71,47 @@ class ofDinahmoeApp : public ofxAndroidApp{
     ofImage m_logo;
     DmafCore m_dmaf;
   
+    typedef struct DmafCallbackArgs {
+      DmafCallbackArgs() {
+      
+      }
+      std::string trigger;
+      float time;
+      int midinote;
+    } DmafCallbackArgs;
+  
+    ofMutex m_mutex;
+    std::list<DmafCallbackArgs> m_dmafMessagesShared; // protected
+    std::list<DmafCallbackArgs> m_newDmafMessages; // protected
+  
+    void dmafDirectCallback(const char* trigger_, float time_, DmParametersPOD params_, void* args);
+  
     ofThread m_initializationThread;
     float** m_tempOutputBuffer;
+  
+    ofxPanel m_gui;
+  
+    ofxToggle m_playStop;
+    ofxFloatSlider m_intensity;
+    ofxFloatSlider m_rotation;
+    ofxLabel m_currentTime;
+    // cbs
+    void playStateChanged(bool & playStop_);
+    void intensityChanged(float & intensity_);
+    void rotationChanged(float & rotation_);
+  
+  
+    // graphics
+  
+    vector<ofPoint> vertices;
+    vector<ofColor> colors;
+    int nTri;       //The number of triangles
+    int nVert;      //The number of the vertices equals nTri * 3
+    ofLight m_directionalLight;
+    ofLight m_spotLight;
+    ofMaterial m_material;
+  
+    void setupGraphics();
+  
+    float scale;
 };
