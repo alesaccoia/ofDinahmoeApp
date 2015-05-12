@@ -65,7 +65,7 @@ void ofDinahmoeApp::dragEvent(ofDragInfo dragInfo){
 
 #endif
 
-#if defined(TARGET_OSX)
+#if defined(TARGET_IOS)
 
 //--------------------------------------------------------------
 void ofDinahmoeApp::exit(){
