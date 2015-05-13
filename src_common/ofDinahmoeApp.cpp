@@ -1,5 +1,7 @@
 #include "ofDinahmoeApp.h"
 
+#include <cassert>
+
 #define SAMPLING_RATE 44100.F
 #define INPUT_CHANNELS 0
 #define OUTPUT_CHANNELS 2

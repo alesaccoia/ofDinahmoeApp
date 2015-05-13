@@ -1,3 +1,4 @@
 ofxAndroid
 ofxAccelerometer
 ofxDmaf
+ofxGui
