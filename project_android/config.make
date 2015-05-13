@@ -2,7 +2,11 @@
 # CONFIGURE PROJECT MAKEFILE (optional)
 #   This file is where we make project specific configurations.
 ################################################################################
+# this must be here otherwise make install won't work
+PKGNAME = com.dinahmoe.ofDinahmoeApp
 
+#Alex: this needs to be here otherwise the Java app will not find the resources
+APPNAME = AAAADinahmoeTestApp
 ################################################################################
 # OF ROOT
 #   The location of your root openFrameworks installation
