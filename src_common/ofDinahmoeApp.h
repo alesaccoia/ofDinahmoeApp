@@ -111,7 +111,10 @@ class ofDinahmoeApp : public ofxAndroidApp{
     ofLight m_spotLight;
     ofMaterial m_material;
   
+    ofCamera m_camera;
+  
     void setupGraphics();
   
     float scale;
+    float colorScale;
 };

@@ -17,6 +17,7 @@ void dmafCb(const char* trigger_, float time_, DmParametersPOD params_, void* ar
 void ofDinahmoeApp::setup(){
 
   scale = 1.0F;
+  colorScale = 1.0F;
 
   thisApp = this;
   
@@ -25,6 +26,8 @@ void ofDinahmoeApp::setup(){
   ofSetSmoothLighting(true);
   
   setupGraphics();
+  
+  m_camera.setPosition(ofGetWidth()/2, ofGetHeight()/2, 250);
   
   // setup gui
   m_gui.setup(); // most of the time you don't need a name
@@ -39,9 +42,6 @@ void ofDinahmoeApp::setup(){
   
   m_logo.load("DinahMoeLogo.png");
   
-//  int bufferSize		= 512;
-//	sampleRate 			= 44100;
-//  soundStream.setup(this, 2, 0, 44100, 512, 4);
   
   DmDictionary params;
   params.setStringValue("settingsFile", ofToDataPath("android_tempo/xml/settings.xml").c_str());
@@ -104,8 +104,11 @@ void ofDinahmoeApp::update(){
     std::string trig(nmi->trigger);
     if (nmi->time < m_dmaf.getCurrentTime() + 0.04) {
       if (trig == "drums_1") {
-        if (nmi->midinote == 36) {
-          scale = 1.5F;
+        int midinote = nmi->midinote;
+        if (midinote == 36) {
+          scale = 2.5F;
+        } else {
+          colorScale = 3;
         }
       }
       nmi = m_newDmafMessages.erase(nmi);
@@ -121,41 +124,39 @@ void ofDinahmoeApp::draw(){
 
   ofEnableDepthTest();
   ofEnableLighting();
+  m_camera.begin();
   m_material.begin();
   
   if (false) m_spotLight.enable();
   
   m_directionalLight.enable();
-//  
-//	//Set a gradient background from white to gray
-//	//for adding an illusion of visual depth to the scene
-
-	ofPushMatrix();						//Store the coordinate system
-
-	//Move the coordinate center to screen's center
-	ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
+	ofPushMatrix();	ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
 
 	//Calculate the rotation angle
 	float time = ofGetElapsedTimef();	//Get time in seconds
 	float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
-	ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
-  ofScale(scale,scale,scale);
+	ofScale(scale,scale,scale);
+  ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
   scale *= .97;
   if (scale < 1.0F) {
     scale = 1.0F;
   }
   
-	//Draw the triangles
+	//Draw the spheres
 	for (int i=0; i<nTri; i++) {
-		ofSetColor( colors[i] );		//Set color
+		ofSetColor( colors[i] * colorScale );		//Set color
     ofDrawSphere(vertices[ i*3 ], 10);
 	}
-
+  colorScale *= .92;
+  if (scale < 1.0F) {
+    scale = 1.0F;
+  }
 	ofPopMatrix();	//Restore the coordinate system
-  
   m_material.end();
   
   if (false) m_spotLight.draw();
+  
+  m_camera.end();
   
   ofDisableLighting();
   ofDisableDepthTest();
@@ -227,7 +228,7 @@ void ofDinahmoeApp::setupGraphics() {
 	colors.resize( nTri );
 	for (int i=0; i<nTri; i++) {
 		//Take a random color from black to red
-		colors[i] = ofColor( ofRandom(128,255), 45, 0 );
+		colors[i] = ofColor( ofRandom(128,255), 45, 17 );
 	}
 
   m_directionalLight.setDiffuseColor(ofColor(255.f, 255.f, 255.f));
