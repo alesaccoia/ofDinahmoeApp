@@ -33,10 +33,10 @@ void ofDinahmoeApp::setup(){
   
   // setup gui
   m_gui.setup(); // most of the time you don't need a name
-  m_gui.add(m_playStop.setup("play/stop", false));
-  m_gui.add(m_intensity.setup("intensity_phone", 0, 0, 10));
-  m_gui.add(m_rotation.setup("rotation3_phone", -90, 0, 90));
-  m_gui.add(m_currentTime.setup("Time", "0.0"));
+  m_gui.add(m_playStop.setup("play/stop", false, ofGetWidth()/2, ofGetHeight()/18));
+  m_gui.add(m_intensity.setup("intensity_phone", 0, 0, 10, ofGetWidth()/2, ofGetHeight()/18));
+  m_gui.add(m_rotation.setup("rotation3_phone", -90, 0, 90, ofGetWidth()/2, ofGetHeight()/18));
+  m_gui.add(m_currentTime.setup("Time", "0.0", ofGetWidth()/2, ofGetHeight()/18));
   
   m_playStop.addListener(this, &ofDinahmoeApp::playStateChanged);
   m_intensity.addListener(this, &ofDinahmoeApp::intensityChanged);
