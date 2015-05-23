@@ -24,7 +24,7 @@ fi
 
 
 echo "\033[32mInitializing project named $1 in $(pwd)...\033[0m"
-echo "\033[32mExecuting operations for the Android platform\033[0m"
+echo "\034[32mExecuting operations for the Android platform\033[0m"
 
 OP_TITLE="\tChanging the app_name key in the file ./project_android/res/values/strings.xml to $APP_NAME"
 sed -i '' -E 's/(<string name="app_name">)[^>]+(<\/string>)/\1'$1'\2/g' ./project_android/res/values/strings.xml
@@ -45,7 +45,4 @@ if [[ $rc != 0 ]]; then echo "$OP_TITLE \033[31mFAIL\033[0m" exit $rc; else  ech
 
 
 
-# echo "\tChanging the path to  key in the file ./project_android/res/values/strings.xml to $APP_NAME"
-# sed -i '' -E 's/(<string name="app_name">)[^>]+(<\/string>)/\1'$1'\2/g' ./project_android/res/values/strings.xml
-
-
+echo "The rest of the stuff must be man made, I am going crazy with sed"
