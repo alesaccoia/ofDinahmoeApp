@@ -20,6 +20,7 @@ class ofDinahmoeApp : public ofxAndroidApp{
 		void setup();
 		void update();
 		void draw();
+    void exit();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -36,8 +37,7 @@ class ofDinahmoeApp : public ofxAndroidApp{
 		void gotMessage(ofMessage msg);
     #endif
   
-    #if defined(TARGET_IOS)    
-    void exit();
+    #if defined(TARGET_IOS)
     void touchDown(ofTouchEventArgs & touch);
     void touchMoved(ofTouchEventArgs & touch);
     void touchUp(ofTouchEventArgs & touch);
@@ -48,7 +48,7 @@ class ofDinahmoeApp : public ofxAndroidApp{
     void gotFocus();
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
-    #endif
+    #endif // defined(TARGET_IOS)    
 		
     #if defined(TARGET_ANDROID)
     void touchDown(int x, int y, int id);
@@ -66,7 +66,7 @@ class ofDinahmoeApp : public ofxAndroidApp{
 		bool backPressed();
 		void okPressed();
 		void cancelPressed();
-    #endif
+    #endif // defined(TARGET_ANDROID)
   
     ofImage m_logo;
     DmafCore m_dmaf;
@@ -117,4 +117,7 @@ class ofDinahmoeApp : public ofxAndroidApp{
   
     float scale;
     float colorScale;
+  
+    volatile bool m_isPlaying;
+    ofMutex m_audioMutex;
 };

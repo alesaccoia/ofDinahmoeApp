@@ -17,6 +17,7 @@ void dmafCb(const char* trigger_, float time_, DmParametersPOD params_, void* ar
 
 //--------------------------------------------------------------
 void ofDinahmoeApp::setup(){
+  m_isPlaying = false;
 
   scale = 1.0F;
   colorScale = 1.0F;
@@ -59,6 +60,15 @@ void ofDinahmoeApp::setup(){
   //
   ofSoundStreamSetup(OUTPUT_CHANNELS, INPUT_CHANNELS, this, SAMPLING_RATE, BUFFER_SIZE, 4);
 
+  m_isPlaying = true;
+}
+
+
+void ofDinahmoeApp::exit() {
+  m_isPlaying = false;
+  m_audioMutex.lock();
+  m_dmaf.deinitialize();
+  m_audioMutex.unlock();
 }
 
 // callbacks
@@ -175,12 +185,23 @@ void ofDinahmoeApp::draw(){
 void ofDinahmoeApp::audioRequested(float * output, int bufferSize, int nChannels) {
   assert(bufferSize == BUFFER_SIZE);
   assert(nChannels == OUTPUT_CHANNELS);
-  m_dmaf.process(0, NULL, nChannels, m_tempOutputBuffer, bufferSize);
-  float * outputSample = output;
-  for (int i = 0; i < BUFFER_SIZE; ++i) {
-    for (int ch = 0; ch < OUTPUT_CHANNELS; ++ch) {
-      *outputSample = m_tempOutputBuffer[ch][i];
-      ++outputSample;
+  if (m_audioMutex.tryLock() && m_isPlaying) {
+    m_dmaf.process(0, NULL, nChannels, m_tempOutputBuffer, bufferSize);
+    float * outputSample = output;
+    for (int i = 0; i < BUFFER_SIZE; ++i) {
+      for (int ch = 0; ch < OUTPUT_CHANNELS; ++ch) {
+        *outputSample = m_tempOutputBuffer[ch][i];
+        ++outputSample;
+      }
+    }
+    m_audioMutex.unlock();
+  } else {
+    float * outputSample = output;
+    for (int i = 0; i < BUFFER_SIZE; ++i) {
+      for (int ch = 0; ch < OUTPUT_CHANNELS; ++ch) {
+        *outputSample = .0F;
+        ++outputSample;
+      }
     }
   }
 }
