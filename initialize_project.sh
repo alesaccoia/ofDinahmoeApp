@@ -22,9 +22,10 @@ then
    exit
 fi
 
+echo ""
 
-echo "\033[32mInitializing project named $1 in $(pwd)...\033[0m"
-echo "\034[32mExecuting operations for the Android platform\033[0m"
+echo "Initializing project named $1 in $(pwd)..."
+echo "Executing operations for the Android platform"
 
 OP_TITLE="\tChanging the app_name key in the file ./project_android/res/values/strings.xml to $APP_NAME"
 sed -i '' -E 's/(<string name="app_name">)[^>]+(<\/string>)/\1'$1'\2/g' ./project_android/res/values/strings.xml
@@ -43,6 +44,30 @@ sed -i '' -E "s@android.library.reference.1=.*@android.library.reference.1=$PATH
 rc=$?;
 if [[ $rc != 0 ]]; then echo "$OP_TITLE \033[31mFAIL\033[0m" exit $rc; else  echo "$OP_TITLE \033[32mOK\033[0m"; fi
 
+OP_TITLE="\tChanging the name of the app in android Manifest"
+sed -i '' -E "s@package=.*@package=\"com.dinahmoe.$APP_NAME\"@g" ./project_android/AndroidManifest.xml
+rc=$?;
+if [[ $rc != 0 ]]; then echo "$OP_TITLE \033[31mFAIL\033[0m" exit $rc; else  echo "$OP_TITLE \033[32mOK\033[0m"; fi
+
+OP_TITLE="\tChanging the name of the app in config.make, used for building the resources zip file"
+sed -i '' -E "s@APPNAME = .*@APPNAME = $APP_NAME@g" ./project_android/config.make
+rc=$?;
+if [[ $rc != 0 ]]; then echo "$OP_TITLE \033[31mFAIL\033[0m" exit $rc; else  echo "$OP_TITLE \033[32mOK\033[0m"; fi
 
 
-echo "The rest of the stuff must be man made, I am going crazy with sed"
+OP_TITLE="\tChanging the package name of the app in config.make, used for installing and running"
+sed -i '' -E "s@PKGNAME = .*@PKGNAME = com.dinahmoe.$APP_NAME@g" ./project_android/config.make
+rc=$?;
+if [[ $rc != 0 ]]; then echo "$OP_TITLE \033[31mFAIL\033[0m" exit $rc; else  echo "$OP_TITLE \033[32mOK\033[0m"; fi
+
+
+OP_TITLE="\tChanging the package declaration in the Java source file"
+sed -i '' -E "s@package .*@package com.dinahmoe.$APP_NAME;@g" ./project_android/srcJava/com/dinahmoe/ofDinahmoeApp/OFActivity.java
+rc=$?;
+if [[ $rc != 0 ]]; then echo "$OP_TITLE \033[31mFAIL\033[0m" exit $rc; else  echo "$OP_TITLE \033[32mOK\033[0m"; fi
+
+echo ""
+
+echo "For the other platforms must be man made, I am going crazy with sed"
+
+echo ""
