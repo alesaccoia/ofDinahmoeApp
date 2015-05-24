@@ -1,3 +1,18 @@
+
+/**
+  @date 5/23/2015
+  @author  Alessandro Saccoia <alessandro@dinahmoe.com>
+  @copyright 2015 Dinahmoe
+
+  This file encapsulates the following things:
+    - init/deinit across the various platforms
+    - multi touch vs single mouse clicks
+    - dmaf initialization
+    - dmaf messages demultiplexing
+
+  It doesn't implement any draw method that remains pure virtual, so this
+  class is here to be subclassed.
+*/
 #pragma once
 
 #include "ofMain.h"
@@ -6,15 +21,18 @@
 
 #include <list>
 
-
 #if defined(TARGET_ANDROID)
 #include "ofxAndroid.h"
 #endif
 
+#if defined(TARGET_OSX)
+#include "ofxMultiTouchPad.h"
+#endif
+
 #if defined(TARGET_OSX) || defined(TARGET_IOS)
-class ofDinahmoeApp : public ofBaseApp{
+class ofDmafApp : public ofBaseApp{
 #elif defined(TARGET_ANDROID)
-class ofDinahmoeApp : public ofxAndroidApp{
+class ofDmafApp : public ofxAndroidApp{
 #endif
 	public:
 		void setup();
@@ -120,4 +138,22 @@ class ofDinahmoeApp : public ofxAndroidApp{
   
     volatile bool m_isPlaying;
     ofMutex m_audioMutex;
+  
+  
+    #if defined(TARGET_OSX)
+    bool m_usesMultitouch;
+    ofxMultiTouchPad m_pad;
+    #endif
+};
+
+class AlexUtilityBubble {
+ public:
+  AlexUtilityBubble(std::string text_, float duration_ = 3.0F);
+  ~AlexUtilityBubble();
+  void update(ofEventArgs & args);
+  void draw(ofEventArgs & args);
+ private:
+  std::string m_text;
+  float m_duration;
+  float m_endTime;
 };

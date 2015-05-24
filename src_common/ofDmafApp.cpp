@@ -1,4 +1,4 @@
-#include "ofDinahmoeApp.h"
+#include "ofDmafApp.h"
 
 #include <cassert>
 
@@ -8,7 +8,7 @@
 #define BUFFER_SIZE 512
 
 
-static ofDinahmoeApp* thisApp;
+static ofDmafApp* thisApp;
 
 void dmafCb(const char* trigger_, float time_, DmParametersPOD params_, void* args) {
   thisApp->dmafDirectCallback(trigger_, time_, params_, args);
@@ -16,7 +16,7 @@ void dmafCb(const char* trigger_, float time_, DmParametersPOD params_, void* ar
 
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::setup(){
+void ofDmafApp::setup(){
   m_isPlaying = false;
 
   scale = 1.0F;
@@ -39,9 +39,9 @@ void ofDinahmoeApp::setup(){
   m_gui.add(m_rotation.setup("rotation3_phone", -90, 0, 90, ofGetWidth()/2, ofGetHeight()/18));
   m_gui.add(m_currentTime.setup("Time", "0.0", ofGetWidth()/2, ofGetHeight()/18));
   
-  m_playStop.addListener(this, &ofDinahmoeApp::playStateChanged);
-  m_intensity.addListener(this, &ofDinahmoeApp::intensityChanged);
-  m_rotation.addListener(this, &ofDinahmoeApp::rotationChanged);
+  m_playStop.addListener(this, &ofDmafApp::playStateChanged);
+  m_intensity.addListener(this, &ofDmafApp::intensityChanged);
+  m_rotation.addListener(this, &ofDmafApp::rotationChanged);
   
   m_logo.load("DinahMoeLogo.png");
   
@@ -61,10 +61,19 @@ void ofDinahmoeApp::setup(){
   ofSoundStreamSetup(OUTPUT_CHANNELS, INPUT_CHANNELS, this, SAMPLING_RATE, BUFFER_SIZE, 4);
 
   m_isPlaying = true;
+  
+  AlexUtilityBubble* foo(new AlexUtilityBubble("ciao"));
+  
+  
+  #if defined(TARGET_OSX)
+  m_usesMultitouch = false;
+  m_pad = ofxMultiTouchPad();
+  #endif
+
 }
 
 
-void ofDinahmoeApp::exit() {
+void ofDmafApp::exit() {
   m_isPlaying = false;
   m_audioMutex.lock();
   m_dmaf.deinitialize();
@@ -72,7 +81,7 @@ void ofDinahmoeApp::exit() {
 }
 
 // callbacks
-void ofDinahmoeApp::playStateChanged(bool & playStop_) {
+void ofDmafApp::playStateChanged(bool & playStop_) {
   if (playStop_) {
     m_dmaf.tell("play");
   } else {
@@ -80,20 +89,20 @@ void ofDinahmoeApp::playStateChanged(bool & playStop_) {
   }
 }
 
-void ofDinahmoeApp::intensityChanged(float & intensity_){
+void ofDmafApp::intensityChanged(float & intensity_){
   DmParametersPOD params = DmParamsCreate(1);
   DmParamsSetFloat(params, 0, intensity_);
   m_dmaf.tell("intensity_phone", params);
 }
 
-void ofDinahmoeApp::rotationChanged(float & rotation_){
+void ofDmafApp::rotationChanged(float & rotation_){
   DmParametersPOD params = DmParamsCreate(1);
   DmParamsSetFloat(params, 0, rotation_);
   m_dmaf.tell("rotation3_phone", params);
 }
 
 
-void ofDinahmoeApp::dmafDirectCallback(const char* trigger_, float time_, DmParametersPOD params_, void* args) {
+void ofDmafApp::dmafDirectCallback(const char* trigger_, float time_, DmParametersPOD params_, void* args) {
   m_mutex.lock();
   m_dmafMessagesShared.push_back(DmafCallbackArgs());
   m_dmafMessagesShared.back().trigger = trigger_;
@@ -103,7 +112,7 @@ void ofDinahmoeApp::dmafDirectCallback(const char* trigger_, float time_, DmPara
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::update(){
+void ofDmafApp::update(){
   m_currentTime = ofToString(m_dmaf.getCurrentTime());
   
   m_mutex.lock();
@@ -131,7 +140,7 @@ void ofDinahmoeApp::update(){
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::draw(){
+void ofDmafApp::draw(){
   ofBackgroundGradient( ofColor( 0 ), ofColor( 128 ) );
 
   ofEnableDepthTest();
@@ -182,7 +191,7 @@ void ofDinahmoeApp::draw(){
 // Audio
 
 
-void ofDinahmoeApp::audioRequested(float * output, int bufferSize, int nChannels) {
+void ofDmafApp::audioRequested(float * output, int bufferSize, int nChannels) {
   assert(bufferSize == BUFFER_SIZE);
   assert(nChannels == OUTPUT_CHANNELS);
   if (m_audioMutex.tryLock() && m_isPlaying) {
@@ -209,7 +218,7 @@ void ofDinahmoeApp::audioRequested(float * output, int bufferSize, int nChannels
 
 // graphics
 
-void ofDinahmoeApp::setupGraphics() {
+void ofDmafApp::setupGraphics() {
 	nTri = 100;			//The number of the triangles
 	nVert= nTri * 3;		//The number of the vertices
 
@@ -285,37 +294,42 @@ void ofDinahmoeApp::setupGraphics() {
 
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::keyPressed(int key){
-  
+void ofDmafApp::keyPressed(int key){
+#if defined(TARGET_OSX)
+  if (key == 'm') {
+    usesMultitouch = !usesMultitouch;
+    AlexUtilityBubble*foo(new AlexUtilityBubble(usesMultitouch?"Using multitouch":"Using mouse"));
+  }
+#endif
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void ofDinahmoeApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofDinahmoeApp::mouseDragged(int x, int y, int button){
+void ofDmafApp::keyReleased(int key){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::mousePressed(int x, int y, int button){
+void ofDmafApp::mouseMoved(int x, int y ){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::mouseReleased(int x, int y, int button){
+void ofDmafApp::mouseDragged(int x, int y, int button){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::windowResized(int w, int h){
+void ofDmafApp::mousePressed(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofDmafApp::mouseReleased(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofDmafApp::windowResized(int w, int h){
 
 }
 
@@ -323,12 +337,12 @@ void ofDinahmoeApp::windowResized(int w, int h){
 #if defined(TARGET_OSX) || defined(TARGET_IOS)
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::gotMessage(ofMessage msg){
+void ofDmafApp::gotMessage(ofMessage msg){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::dragEvent(ofDragInfo dragInfo){ 
+void ofDmafApp::dragEvent(ofDragInfo dragInfo){ 
 
 }
 
@@ -337,52 +351,52 @@ void ofDinahmoeApp::dragEvent(ofDragInfo dragInfo){
 #if defined(TARGET_IOS)
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::exit(){
+void ofDmafApp::exit(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchDown(ofTouchEventArgs & touch){
+void ofDmafApp::touchDown(ofTouchEventArgs & touch){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchMoved(ofTouchEventArgs & touch){
+void ofDmafApp::touchMoved(ofTouchEventArgs & touch){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchUp(ofTouchEventArgs & touch){
+void ofDmafApp::touchUp(ofTouchEventArgs & touch){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchDoubleTap(ofTouchEventArgs & touch){
+void ofDmafApp::touchDoubleTap(ofTouchEventArgs & touch){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchCancelled(ofTouchEventArgs & touch){
+void ofDmafApp::touchCancelled(ofTouchEventArgs & touch){
     
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::lostFocus(){
+void ofDmafApp::lostFocus(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::gotFocus(){
+void ofDmafApp::gotFocus(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::gotMemoryWarning(){
+void ofDmafApp::gotMemoryWarning(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::deviceOrientationChanged(int newOrientation){
+void ofDmafApp::deviceOrientationChanged(int newOrientation){
 
 }
 
@@ -391,67 +405,99 @@ void ofDinahmoeApp::deviceOrientationChanged(int newOrientation){
 #if defined(TARGET_ANDROID)
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchDown(int x, int y, int id){
+void ofDmafApp::touchDown(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchMoved(int x, int y, int id){
+void ofDmafApp::touchMoved(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchUp(int x, int y, int id){
+void ofDmafApp::touchUp(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchDoubleTap(int x, int y, int id){
+void ofDmafApp::touchDoubleTap(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::touchCancelled(int x, int y, int id){
+void ofDmafApp::touchCancelled(int x, int y, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
+void ofDmafApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::pause(){
+void ofDmafApp::pause(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::stop(){
+void ofDmafApp::stop(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::resume(){
+void ofDmafApp::resume(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::reloadTextures(){
+void ofDmafApp::reloadTextures(){
 
 }
 
 //--------------------------------------------------------------
-bool ofDinahmoeApp::backPressed(){
+bool ofDmafApp::backPressed(){
 	return false;
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::okPressed(){
+void ofDmafApp::okPressed(){
 
 }
 
 //--------------------------------------------------------------
-void ofDinahmoeApp::cancelPressed(){
+void ofDmafApp::cancelPressed(){
 
 }
 #endif
+
+
+AlexUtilityBubble::AlexUtilityBubble(std::string text_, float duration_)
+ : m_text(text_)
+ , m_duration(duration_)
+ , m_endTime(ofGetElapsedTimef() + m_duration) {
+	ofAddListener(ofEvents().update, this, &AlexUtilityBubble::update);
+	ofAddListener(ofEvents().draw, this, &AlexUtilityBubble::draw);
+}
+
+AlexUtilityBubble::~AlexUtilityBubble() {
+  ofRemoveListener(ofEvents().update, this, &AlexUtilityBubble::update);
+  ofRemoveListener(ofEvents().draw, this, &AlexUtilityBubble::draw);
+}
+
+void AlexUtilityBubble::update(ofEventArgs & args) {
+  if (ofGetElapsedTimef() >= m_endTime) delete this;
+}
+
+void AlexUtilityBubble::draw(ofEventArgs & args) {
+  ofFill();
+  float opacity = 255.0F * (m_endTime - ofGetElapsedTimef()) / m_duration;
+  ofDrawBitmapStringHighlight(m_text
+    , ofGetWidth() / 2
+    , ofGetHeight() / 2
+    , ofColor(ofColor::darkOliveGreen, opacity)
+    , ofColor(ofColor::whiteSmoke, opacity));
+}
+
+
+
+
