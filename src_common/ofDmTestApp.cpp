@@ -7,3 +7,20 @@
 //
 
 #include "ofDmTestApp.h"
+
+void ofDmTestApp::setup() {
+  ofDmafApp::setup();
+}
+
+void ofDmTestApp::update() {
+  ofDmafApp::update();
+}
+
+void ofDmTestApp::draw() {
+
+}
+
+const char* ofDmTestApp::getDmafConfigurationPath() {
+  return ofToDataPath("android_tempo/xml/settings.xml").c_str();
+}
+

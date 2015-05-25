@@ -35,10 +35,17 @@ class ofDmafApp : public ofBaseApp{
 class ofDmafApp : public ofxAndroidApp{
 #endif
 	public:
-		void setup();
-		void update();
-		void draw();
-    void exit();
+    // subclasses methods' need to call the relative ofDmafApp methods
+		virtual void setup();
+		virtual void update();
+    virtual void exit();
+  
+    // pure virtual: we don't draw anything
+    virtual void draw() = 0;
+    virtual const char* getDmafConfigurationPath() = 0;
+  
+    // calls dmaf process
+    virtual void audioRequested(float * output, int bufferSize, int nChannels );
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -48,7 +55,6 @@ class ofDmafApp : public ofxAndroidApp{
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
   
-    void audioRequested(float * output, int bufferSize, int nChannels );
   
     #if defined(TARGET_OSX) || defined(TARGET_IOS)
 		void dragEvent(ofDragInfo dragInfo);
@@ -86,8 +92,23 @@ class ofDmafApp : public ofxAndroidApp{
 		void cancelPressed();
     #endif // defined(TARGET_ANDROID)
   
-    ofImage m_logo;
+  
+   protected:
     DmafCore m_dmaf;
+  
+  
+  
+    // callback related stuff: the internal dmaf dispatcher runs on another
+    // thread: we can't call openGL methods from other threads so what happens
+    // is:
+    // - user code subscribes to events with subscribeToDmafTrigger
+    // - the callback pushes messages in a queue: m_dmafMessagesShared
+    // - at each update() m_dmafMessagesShared is checked: if it contains
+    //   something, the content is spliced to the m_newDmafMessages that can
+    //   be safely accessed.
+  
+    // this is the favorite way to subscribe to triggers
+    void subscribeToDmafTrigger(const char* eventName);
   
     typedef struct DmafCallbackArgs {
       DmafCallbackArgs() {
@@ -99,46 +120,14 @@ class ofDmafApp : public ofxAndroidApp{
     } DmafCallbackArgs;
   
     ofMutex m_mutex;
-    std::list<DmafCallbackArgs> m_dmafMessagesShared; // protected
-    std::list<DmafCallbackArgs> m_newDmafMessages; // protected
-  
+    std::list<DmafCallbackArgs> m_dmafMessagesShared; // protected by m_mutex
+    std::list<DmafCallbackArgs> m_newDmafMessages; // protected by m_mutex
+   public:
     void dmafDirectCallback(const char* trigger_, float time_, DmParametersPOD params_, void* args);
-  
-    ofThread m_initializationThread;
+   private:
     float** m_tempOutputBuffer;
-  
-    ofxPanel m_gui;
-  
-    ofxToggle m_playStop;
-    ofxFloatSlider m_intensity;
-    ofxFloatSlider m_rotation;
-    ofxLabel m_currentTime;
-    // cbs
-    void playStateChanged(bool & playStop_);
-    void intensityChanged(float & intensity_);
-    void rotationChanged(float & rotation_);
-  
-  
-    // graphics
-  
-    vector<ofPoint> vertices;
-    vector<ofColor> colors;
-    int nTri;       //The number of triangles
-    int nVert;      //The number of the vertices equals nTri * 3
-    ofLight m_directionalLight;
-    ofLight m_spotLight;
-    ofMaterial m_material;
-  
-    ofCamera m_camera;
-  
-    void setupGraphics();
-  
-    float scale;
-    float colorScale;
-  
     volatile bool m_isPlaying;
     ofMutex m_audioMutex;
-  
   
     #if defined(TARGET_OSX)
     bool m_usesMultitouch;
